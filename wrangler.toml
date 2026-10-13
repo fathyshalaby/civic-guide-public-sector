@@ -1,0 +1,14 @@
+name = "summit-sprint-public-sector-assistant"
+pages_build_output_dir = "public"
+compatibility_date = "2026-10-13"
+
+# Optional: bind Workers AI in the Pages dashboard or uncomment this block.
+# [ai]
+# binding = "AI"
+
+# Optional: create a D1 database, run migrations/0001_audit_events.sql, then
+# add the real database_id here (or configure the AUDIT_DB binding in Pages).
+# [[d1_databases]]
+# binding = "AUDIT_DB"
+# database_name = "summit-sprint-public-sector-audit"
+# database_id = "replace-with-real-database-id"

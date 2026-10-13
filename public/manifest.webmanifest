@@ -1,0 +1,16 @@
+{
+  "name": "CIVIC / GUIDE",
+  "short_name": "CIVIC GUIDE",
+  "description": "Klare nächste Schritte für österreichische Amtswege.",
+  "lang": "de-AT",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#eef1f3",
+  "theme_color": "#235d79",
+  "icons": [{
+    "src": "/favicon.svg",
+    "sizes": "any",
+    "type": "image/svg+xml",
+    "purpose": "any maskable"
+  }]
+}

@@ -26,7 +26,7 @@ npm install
 npm run dev
 ```
 
-The browser supports German speech input where the browser exposes Web Speech Recognition. `Vorlesen` uses ElevenLabs when configured and falls back to browser speech synthesis.
+The browser supports German and English speech input where the browser exposes Web Speech Recognition. The language toggle localizes the interface, sends the selected language to the workflow engine and keeps the source-backed flow intact. `Vorlesen` uses ElevenLabs when configured and falls back to browser speech synthesis.
 
 ### One ElevenLabs Agent: web, phone and WhatsApp
 
@@ -61,6 +61,20 @@ Use the same agent everywhere:
 3. For WhatsApp, import the WhatsApp Business account in ElevenLabs, assign the agent, and enable messaging and optional voice-note responses.
 
 There is no custom Twilio or WhatsApp conversation server in this repo. ElevenLabs owns the conversation state, turn-taking, voice notes, phone routing and WhatsApp session lifecycle; Cloudflare only exposes the two secure workflow tools.
+
+### Chrome extension: CIVIC GUIDE on government pages
+
+The `extension/` folder contains a Manifest V3 Chrome side panel and a small
+in-page launcher for Austrian government domains such as `*.gv.at`. A citizen
+can select official text and ask CIVIC / GUIDE to explain it, switch language,
+or start a guided workflow. The extension sends only the explicit selection or
+an explicitly requested, limited page context; it does not read form values,
+password fields or silently scrape whole pages.
+
+Load it locally from `chrome://extensions` with Developer mode → Load unpacked
+→ select `extension/`. Set the side-panel API URL to the deployed Pages URL;
+it defaults to `http://localhost:8796` for local development. See
+`extension/README.md` for the Chrome Web Store and production checklist.
 
 ## Cloudflare setup
 

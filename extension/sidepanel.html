@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CIVIC GUIDE</title>
+  <link rel="stylesheet" href="sidepanel.css" />
+</head>
+<body>
+  <header class="panel-header">
+    <div class="brand"><span class="crest">+</span><span>CIVIC <i>/</i> GUIDE</span></div>
+    <button id="language-toggle" class="language" type="button" aria-label="Auf Englisch wechseln">EN</button>
+  </header>
+  <main>
+    <section class="intro">
+      <p class="eyebrow" data-i18n="eyebrow">CIVIC GUIDE · IM BROWSER</p>
+      <h1 data-i18n="title">Was bedeutet diese Amtsseite?</h1>
+      <p data-i18n="intro">Markiere einen Abschnitt oder beschreibe, wobei du festhängst. Ich erkläre ihn in klaren Worten und zeige den nächsten sicheren Schritt.</p>
+    </section>
+    <section class="context-card" aria-live="polite">
+      <div class="context-top"><span class="dot"></span><span id="context-label" data-i18n="noContext">Noch keine Seite ausgewählt</span></div>
+      <p id="context-title" class="context-title">Öffne eine österreichische Behördenseite.</p>
+      <a id="context-link" class="context-link" href="#" target="_blank" rel="noreferrer" hidden></a>
+      <button id="use-page" class="secondary" type="button" data-i18n="usePage">Diese Seite als Kontext verwenden</button>
+    </section>
+    <form id="guide-form">
+      <label for="question" data-i18n="questionLabel">Deine Frage</label>
+      <textarea id="question" rows="4" placeholder="z. B. Was muss ich hier vorbereiten?" required></textarea>
+      <div class="form-row"><span id="privacy-note" class="privacy-note" data-i18n="privacy">Nur der ausgewählte Kontext wird gesendet.</span><button class="primary" type="submit"><span data-i18n="ask">Erklären</span><span>→</span></button></div>
+    </form>
+    <section id="answer" class="answer" hidden>
+      <div class="answer-top"><span class="eyebrow" data-i18n="answerEyebrow">CIVIC GUIDE · ANTWORT</span><span id="confidence" class="confidence"></span></div>
+      <p id="reply" class="reply"></p>
+      <div id="plain" class="plain"></div>
+      <div id="questions" class="questions"></div>
+      <div id="sources" class="sources"></div>
+      <div class="answer-actions"><button id="copy" class="secondary" type="button" data-i18n="copy">Zusammenfassung kopieren</button><a id="open-source" class="source-button" href="#" target="_blank" rel="noreferrer" hidden data-i18n="openSource">Quelle öffnen ↗</a></div>
+    </section>
+  </main>
+  <details class="settings"><summary data-i18n="settings">Verbindung</summary><label for="api-base" data-i18n="apiLabel">CIVIC API URL</label><input id="api-base" type="url" value="http://localhost:8796" /><button id="save-api" class="secondary" type="button" data-i18n="save">Speichern</button></details>
+  <script src="sidepanel.js"></script>
+</body>
+</html>

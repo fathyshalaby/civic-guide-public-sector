@@ -5,6 +5,43 @@ const form = $("#assistant-form");
 const message = $("#message");
 const answerSection = $("#answer-section");
 let state = { result: null };
+let currentLanguage = "de";
+let agentConnected = false;
+
+const locale = {
+  de: {
+    secureLabel: "sichere demo", status: "status", heroEyebrow: "Digital Assistants · Evolution bis 2030", heroTitle: "Verwaltung,<br /><em>verständlich.</em>", heroLede: "Erzähl, was passiert ist. CIVIC / GUIDE übersetzt deine Worte in den richtigen Amtsweg, erklärt ihn verständlich und zeigt, was als Nächstes wirklich zu tun ist.", principleListen: "01 / zuhören", principleMap: "02 / einordnen", principleHandoff: "03 / übergeben", demoReady: "demo bereit", agentQuote: "„Ich bin umgezogen. Was muss ich jetzt erledigen?“", agentResult: "Wohnsitz anmelden", agentMeta: "2 Rückfragen · 3 klare Schritte", voiceLaunch: "Mit dem Guide sprechen", agentFootnote: "Jede Antwort bleibt nachvollziehbar. Keine Entscheidung ohne dich.", deskTitle: "Womit kann ich helfen?", deskTime: "Heute · online", exampleMove: "Ich bin umgezogen.", exampleMoveTag: "Wohnsitz anmelden →", exampleIdentity: "Wie bekomme ich eine ID Austria?", exampleIdentityTag: "Digitale Identität →", exampleParking: "Ich brauche eine Parkberechtigung.", exampleParkingTag: "Parken →", messageLabel: "Dein Anliegen", messagePlaceholder: "Beschreibe dein Anliegen in deinen eigenen Worten …", voiceInput: "Spracheingabe", nextStep: "Nächsten Schritt zeigen", answerTitle: "Das ist der nächste Schritt.", readAloud: "Vorlesen", yourPath: "dein amtsweg", prepareHandoff: "Übergabe vorbereiten", humanLoopTitle: "Hier bleibt ein Mensch im Loop.", humanLoopBody: "Das Anliegen ist nicht eindeutig genug für eine sichere Zuordnung. Nutze die Quelle oder gib diese Zusammenfassung an eine zuständige Stelle weiter.", traceable: "nachvollziehbar", officialSources: "Offizielle Quellen", footerChallenge: "public sector challenge", footerTrust: "plain language · human oversight", plainWords: "In klaren Worten", needsMore: "Dafür brauche ich noch", recognized: "Erkannte Hinweise", safeMode: "Sicherheitsmodus", safeModeBody: "Kein passender Vorgang erkannt — ich erfinde keine Antwort.", sourceBacked: "● quellenbasiert", noLegal: "keine Rechtsentscheidung", humanReview: "menschliche Prüfung bleibt möglich", confidence: "sicher", demoInserted: "Beispiel eingesetzt — du kannst es jetzt sprechen oder senden", agentConnected: "agent verbunden", openConversation: "Gespräch öffnen", listening: "ich höre zu …", understood: "verstanden", micUnavailable: "Mikrofon nicht verfügbar", ordering: "ordne zu …", workflowNote: "Die folgenden Angaben helfen, eine sichere Übergabe vorzubereiten.", preparing: "wird vorbereitet …", consentError: "Bitte bestätige zuerst, dass du die Angaben geprüft hast.", handoffTitle: "Übergabe vorbereiten", handoffBody: "Diese Angaben helfen, deinen Vorgang zusammenzufassen. Es wird noch nichts an eine Behörde übermittelt.", consent: "Ich habe die Angaben geprüft und möchte die Demo-Übergabe vorbereiten.", back: "Zurück", prepare: "Ja, vorbereiten", prepared: "übergabe vorbereitet", documented: "Der nächste Schritt ist dokumentiert.", demoCase: "Demo-Vorgangsnummer", liveNote: "Im Live-Modus würde die Anfrage jetzt an das angeschlossene Service-System übergeben — erst nach dessen eigener Prüfung.", auditDemo: "Audit-Demo ohne Datenbankbindung"
+  },
+  en: {
+    secureLabel: "safe demo", status: "status", heroEyebrow: "Digital Assistants · Evolution to 2030", heroTitle: "Public services,<br /><em>understood.</em>", heroLede: "Tell us what happened. CIVIC / GUIDE turns your words into the right public-service path, explains it clearly and shows what to do next.", principleListen: "01 / listen", principleMap: "02 / map", principleHandoff: "03 / hand over", demoReady: "demo ready", agentQuote: "“I moved house. What do I need to do now?”", agentResult: "Register a new address", agentMeta: "2 questions · 3 clear steps", voiceLaunch: "Speak with the Guide", agentFootnote: "Every answer shows its source. Nothing is decided without you.", deskTitle: "How can I help?", deskTime: "Today · online", exampleMove: "I moved house.", exampleMoveTag: "Register a new address →", exampleIdentity: "How do I get ID Austria?", exampleIdentityTag: "Digital identity →", exampleParking: "I need a parking permit.", exampleParkingTag: "Parking →", messageLabel: "Your question", messagePlaceholder: "Describe your question in your own words …", voiceInput: "Voice input", nextStep: "Show the next step", answerTitle: "Here is the next step.", readAloud: "Read aloud", yourPath: "your public-service path", prepareHandoff: "Prepare handoff", humanLoopTitle: "A person stays in the loop.", humanLoopBody: "This question is not clear enough for a safe match. Use the source or share this summary with the responsible office.", traceable: "traceable", officialSources: "Official sources", footerChallenge: "public sector challenge", footerTrust: "plain language · human oversight", plainWords: "In clear words", needsMore: "I still need", recognized: "Signals found", safeMode: "Safety mode", safeModeBody: "No matching process was found — I will not make up an answer.", sourceBacked: "● source-backed", noLegal: "not a legal decision", humanReview: "human review remains possible", confidence: "confidence", demoInserted: "Example inserted — you can speak or send it now", agentConnected: "agent connected", openConversation: "Open conversation", listening: "listening …", understood: "understood", micUnavailable: "Microphone unavailable", ordering: "matching …", workflowNote: "These details help prepare a safe handoff.", preparing: "preparing …", consentError: "Please confirm that you checked the information first.", handoffTitle: "Prepare handoff", handoffBody: "These details help summarize your request. Nothing is sent to a public office yet.", consent: "I checked the information and want to prepare the demo handoff.", back: "Back", prepare: "Yes, prepare", prepared: "handoff prepared", documented: "The next step is documented.", demoCase: "Demo case number", liveNote: "In live mode, the request would now be handed to the connected service system — only after its own review.", auditDemo: "Demo audit without database binding"
+  }
+};
+
+const examples = {
+  de: { move: "Ich bin umgezogen. Was muss ich jetzt erledigen?", identity: "Wie bekomme ich eine ID Austria?", parking: "Ich brauche eine Parkberechtigung für meine Gemeinde." },
+  en: { move: "I moved house. What do I need to do now?", identity: "How do I get ID Austria?", parking: "I need a parking permit for my municipality." },
+};
+
+function t(key) { return locale[currentLanguage][key] || key; }
+
+function applyLocale() {
+  document.querySelectorAll("[data-i18n]").forEach((element) => { element.innerHTML = t(element.dataset.i18n); });
+  $("#hero-title").innerHTML = t("heroTitle");
+  message.placeholder = t("messagePlaceholder");
+  document.querySelectorAll("[data-example-key]").forEach((button) => { button.dataset.example = examples[currentLanguage][button.dataset.exampleKey]; });
+  const toggle = $("#language-toggle");
+  toggle.textContent = currentLanguage === "de" ? "EN" : "DE";
+  toggle.setAttribute("aria-label", currentLanguage === "de" ? "Switch to English" : "Auf Deutsch wechseln");
+  if (agentConnected) $("#agent-status").textContent = t("agentConnected");
+  const widget = $("#agent-widget-slot elevenlabs-convai");
+  if (widget) {
+    widget.setAttribute("action-text", t("voiceLaunch"));
+    widget.setAttribute("start-call-text", currentLanguage === "de" ? "Gespräch starten" : "Start conversation");
+    widget.setAttribute("end-call-text", currentLanguage === "de" ? "Gespräch beenden" : "End conversation");
+    widget.setAttribute("listening-text", currentLanguage === "de" ? "Civic Guide hört zu …" : "Civic Guide is listening …");
+    widget.setAttribute("speaking-text", currentLanguage === "de" ? "Civic Guide antwortet …" : "Civic Guide is speaking …");
+  }
+}
 
 function escape(value) {
   const node = document.createElement("span");
@@ -24,11 +61,11 @@ function speak(text) {
       return;
     }
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = challenge.language;
+    utterance.lang = currentLanguage === "en" ? "en-US" : challenge.language;
     window.speechSynthesis?.speak(utterance);
   }).catch(() => {
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = challenge.language;
+    utterance.lang = currentLanguage === "en" ? "en-US" : challenge.language;
     window.speechSynthesis?.speak(utterance);
   });
 }
@@ -36,7 +73,7 @@ function speak(text) {
 function setBusy(busy) {
   const button = form.querySelector("button[type=submit]");
   button.disabled = busy;
-  button.innerHTML = busy ? `<span class="spinner"></span>ordne zu …` : `Nächsten Schritt zeigen <span>→</span>`;
+  button.innerHTML = busy ? `<span class="spinner"></span>${t("ordering")}` : `${t("nextStep")} <span>→</span>`;
 }
 
 function renderSources(sources = []) {
@@ -46,20 +83,20 @@ function renderSources(sources = []) {
 function render(result) {
   state.result = result;
   answerSection.hidden = false;
-  $("#confidence").textContent = `${Math.round(result.confidence * 100)}% sicher${result.aiEnhanced ? " · klarer formuliert" : ""}`;
+  $("#confidence").textContent = `${Math.round(result.confidence * 100)}% ${t("confidence")}${result.aiEnhanced ? (currentLanguage === "de" ? " · klarer formuliert" : " · clarified") : ""}`;
   $("#answer-reply").textContent = result.reply;
-  $("#plain-language").innerHTML = `<p class="micro-label">In klaren Worten</p>${(result.plainLanguage || []).map((item) => `<div class="plain-row"><span>✓</span><p>${escape(item)}</p></div>`).join("")}`;
-  $("#questions").innerHTML = result.questions?.length ? `<p class="micro-label">Dafür brauche ich noch</p>${result.questions.map((item) => `<div class="question-row"><span>?</span><p>${escape(item)}</p></div>`).join("")}` : "";
-  $("#match-signals").innerHTML = result.matchedSignals?.length ? `<p class="micro-label">Erkannte Hinweise</p><div class="signal-list">${result.matchedSignals.map((signal) => `<span>${escape(signal)}</span>`).join("")}</div>` : `<p class="micro-label">Sicherheitsmodus</p><p class="muted-note">Kein passender Vorgang erkannt — ich erfinde keine Antwort.</p>`;
+  $("#plain-language").innerHTML = `<p class="micro-label">${t("plainWords")}</p>${(result.plainLanguage || []).map((item) => `<div class="plain-row"><span>✓</span><p>${escape(item)}</p></div>`).join("")}`;
+  $("#questions").innerHTML = result.questions?.length ? `<p class="micro-label">${t("needsMore")}</p>${result.questions.map((item) => `<div class="question-row"><span>?</span><p>${escape(item)}</p></div>`).join("")}` : "";
+  $("#match-signals").innerHTML = result.matchedSignals?.length ? `<p class="micro-label">${t("recognized")}</p><div class="signal-list">${result.matchedSignals.map((signal) => `<span>${escape(signal)}</span>`).join("")}</div>` : `<p class="micro-label">${t("safeMode")}</p><p class="muted-note">${t("safeModeBody")}</p>`;
   const guardrails = result.guardrails || {};
-  $("#trust-banner").innerHTML = `<span class="trust-chip">${guardrails.sourceBacked ? "● quellenbasiert" : "○ Quelle prüfen"}</span><span>${guardrails.legalDecision ? "Rechtsentscheidung" : "keine Rechtsentscheidung"}</span><span>${guardrails.humanReviewRequired ? "menschliche Prüfung bleibt möglich" : "automatisiert"}</span>`;
+  $("#trust-banner").innerHTML = `<span class="trust-chip">${guardrails.sourceBacked ? t("sourceBacked") : (currentLanguage === "de" ? "○ Quelle prüfen" : "○ check source")}</span><span>${guardrails.legalDecision ? (currentLanguage === "de" ? "Rechtsentscheidung" : "legal decision") : t("noLegal")}</span><span>${guardrails.humanReviewRequired ? t("humanReview") : (currentLanguage === "de" ? "automatisiert" : "automated")}</span>`;
   $("#trace-id").textContent = `trace ${result.traceId || "—"}`;
 
   const workflow = result.workflow;
   $("#workflow-label").textContent = workflow?.label || "Persönliche Auskunft";
   $("#workflow-description").textContent = workflow?.description || "Eine zuständige Person kann dich mit deiner konkreten Frage weiter begleiten.";
   $("#workflow-steps").innerHTML = (workflow?.steps || ["Anliegen zusammenfassen", "Zuständige Stelle finden", "Persönliche Übergabe"]).map((step) => `<li>${escape(step)}</li>`).join("");
-  $("#workflow-note").textContent = workflow ? "Die folgenden Angaben helfen, eine sichere Übergabe vorzubereiten." : "Bei unklaren Anliegen bleibt die Antwort bewusst bei einer menschlichen Übergabe.";
+  $("#workflow-note").textContent = workflow ? t("workflowNote") : (currentLanguage === "de" ? "Bei unklaren Anliegen bleibt die Antwort bewusst bei einer menschlichen Übergabe." : "For unclear questions, the answer stays with a human handoff.");
   $("#start-workflow").hidden = !workflow || result.humanHandoff;
   $("#handoff-card").hidden = !result.humanHandoff;
   $("#sources").innerHTML = renderSources(result.sources);
@@ -70,7 +107,7 @@ function render(result) {
 async function ask(text) {
   setBusy(true);
   try {
-    const response = await fetch("/api/understand", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ message: text }) });
+    const response = await fetch("/api/understand", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ message: text, language: currentLanguage }) });
     const data = await response.json();
     if (!response.ok) throw new Error(data.error);
     render(data.result);
@@ -88,7 +125,7 @@ function showSubmitPanel() {
   const panel = $("#submit-panel");
   const fields = (workflow.fields || []).map((field) => `<label class="field-control"><span>${escape(field.label)}</span><input data-field="${escape(field.id)}" type="${escape(field.type || "text")}" placeholder="${escape(field.placeholder || "")}" autocomplete="off" /></label>`).join("");
   panel.hidden = false;
-  panel.innerHTML = `<div class="submit-copy"><p class="eyebrow">CIVIC DESK · 03</p><h3>Übergabe vorbereiten</h3><p>Diese Angaben helfen, deinen Vorgang für <strong>${escape(workflow.label)}</strong> zusammenzufassen. Es wird noch nichts an eine Behörde übermittelt.</p><div class="field-grid">${fields}</div><label class="confirmation-row"><input id="confirm-consent" type="checkbox" /><span>Ich habe die Angaben geprüft und möchte die Demo-Übergabe vorbereiten.</span></label><p id="submit-status" class="submit-status" role="status"></p></div><div class="submit-actions"><button id="cancel-submit" class="secondary-button" type="button">Zurück</button><button id="confirm-submit" class="primary-button" type="button">Ja, vorbereiten <span>↗</span></button></div>`;
+  panel.innerHTML = `<div class="submit-copy"><p class="eyebrow">CIVIC DESK · 03</p><h3>${t("handoffTitle")}</h3><p>${t("handoffBody")} <strong>${escape(workflow.label)}</strong>.</p><div class="field-grid">${fields}</div><label class="confirmation-row"><input id="confirm-consent" type="checkbox" /><span>${t("consent")}</span></label><p id="submit-status" class="submit-status" role="status"></p></div><div class="submit-actions"><button id="cancel-submit" class="secondary-button" type="button">${t("back")}</button><button id="confirm-submit" class="primary-button" type="button">${t("prepare")} <span>↗</span></button></div>`;
   $("#cancel-submit").addEventListener("click", () => { panel.hidden = true; });
   $("#confirm-submit").addEventListener("click", submitCase);
   panel.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -101,28 +138,28 @@ async function submitCase() {
   const consent = $("#confirm-consent");
   const status = $("#submit-status");
   if (!consent.checked) {
-    status.textContent = "Bitte bestätige zuerst, dass du die Angaben geprüft hast.";
+    status.textContent = t("consentError");
     consent.focus();
     return;
   }
   const fields = { originalMessage: state.result.originalMessage };
   panel.querySelectorAll("[data-field]").forEach((input) => { fields[input.dataset.field] = input.value.trim(); });
   button.disabled = true;
-  button.textContent = "wird vorbereitet …";
+  button.textContent = t("preparing");
   try {
     const response = await fetch("/api/submit", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ workflow: state.result.workflow.id, fields, traceId: state.result.traceId, confirm: true, idempotencyKey: globalThis.crypto?.randomUUID?.() }) });
     const data = await response.json();
-    panel.innerHTML = response.ok ? `<div class="success-mark">✓</div><div><p class="eyebrow">übergabe vorbereitet</p><h3>Der nächste Schritt ist dokumentiert.</h3><p>Demo-Vorgangsnummer <strong>${escape(data.caseId || data.idempotencyKey)}</strong>. Im Live-Modus würde die Anfrage jetzt an das angeschlossene Service-System übergeben — erst nach dessen eigener Prüfung.</p><p class="trace-id">${escape(data.audit?.persisted ? "Audit-Ereignis gespeichert" : "Audit-Demo ohne Datenbankbindung")}</p></div>` : `<div><p class="eyebrow">nicht übermittelt</p><h3>Die Anfrage blieb bei dir.</h3><p>${escape(data.error || "Bitte versuche es erneut.")}</p>${data.details?.missing?.length ? `<p class="muted-note">Fehlt noch: ${escape(data.details.missing.join(", "))}</p>` : ""}</div><div class="submit-actions"><button id="close-submit" class="secondary-button" type="button">Schließen</button></div>`;
+    panel.innerHTML = response.ok ? `<div class="success-mark">✓</div><div><p class="eyebrow">${t("prepared")}</p><h3>${t("documented")}</h3><p>${t("demoCase")} <strong>${escape(data.caseId || data.idempotencyKey)}</strong>. ${t("liveNote")}</p><p class="trace-id">${escape(data.audit?.persisted ? (currentLanguage === "de" ? "Audit-Ereignis gespeichert" : "Audit event stored") : t("auditDemo"))}</p></div>` : `<div><p class="eyebrow">${currentLanguage === "de" ? "nicht übermittelt" : "not submitted"}</p><h3>${currentLanguage === "de" ? "Die Anfrage blieb bei dir." : "The request stayed with you."}</h3><p>${escape(data.error || (currentLanguage === "de" ? "Bitte versuche es erneut." : "Please try again."))}</p>${data.details?.missing?.length ? `<p class="muted-note">${currentLanguage === "de" ? "Fehlt noch" : "Still needed"}: ${escape(data.details.missing.join(", "))}</p>` : ""}</div><div class="submit-actions"><button id="close-submit" class="secondary-button" type="button">${t("back")}</button></div>`;
     $("#close-submit")?.addEventListener("click", () => { panel.hidden = true; });
   } catch (cause) {
     status.textContent = cause.message || "Bitte versuche es erneut.";
     button.disabled = false;
-    button.textContent = "Ja, vorbereiten ↗";
+    button.textContent = `${t("prepare")} ↗`;
   }
 }
 
 form.addEventListener("submit", (event) => { event.preventDefault(); if (message.value.trim()) ask(message.value.trim()); });
-document.querySelectorAll("[data-example]").forEach((button) => button.addEventListener("click", () => { message.value = button.dataset.example; message.focus(); }));
+document.querySelectorAll("[data-example-key]").forEach((button) => button.addEventListener("click", () => { message.value = button.dataset.example; message.focus(); }));
 $("#read-button").addEventListener("click", () => { if (state.result) speak(state.result.reply); });
 $("#start-workflow").addEventListener("click", showSubmitPanel);
 $("#voice-launch").addEventListener("click", () => {
@@ -131,27 +168,32 @@ $("#voice-launch").addEventListener("click", () => {
     widget.scrollIntoView({ behavior: "smooth", block: "center" });
     return;
   }
-  message.value = challenge.sample;
+  message.value = examples[currentLanguage].move;
   message.focus();
   message.scrollIntoView({ behavior: "smooth", block: "center" });
-  $("#listening-label").textContent = "Beispiel eingesetzt — du kannst es jetzt sprechen oder senden";
+  $("#listening-label").textContent = t("demoInserted");
+});
+$("#language-toggle").addEventListener("click", () => {
+  const typed = message.value.trim() || state.result?.originalMessage || "";
+  currentLanguage = currentLanguage === "de" ? "en" : "de";
+  applyLocale();
+  if (typed) ask(typed);
 });
 $("#health-button").addEventListener("click", async () => {
   try {
     const response = await fetch("/api/health");
     const data = await response.json();
-    alert(data.ok ? `Online · ${data.workersAI ? "Workers AI aktiv" : "deterministische Demo"} · ${data.auditDb ? "Audit aktiv" : "Audit-Demo"} · ${data.elevenlabs.configured ? "ElevenLabs verbunden" : "Browser-Fallback"}` : "Status nicht verfügbar");
-  } catch { alert("Status nicht verfügbar"); }
+    alert(data.ok ? (currentLanguage === "de" ? `Online · ${data.workersAI ? "Workers AI aktiv" : "deterministische Demo"} · ${data.auditDb ? "Audit aktiv" : "Audit-Demo"} · ${data.elevenlabs.configured ? "ElevenLabs verbunden" : "Browser-Fallback"}` : `Online · ${data.workersAI ? "Workers AI active" : "deterministic demo"} · ${data.auditDb ? "audit active" : "demo audit"} · ${data.elevenlabs.configured ? "ElevenLabs connected" : "browser fallback"}`) : (currentLanguage === "de" ? "Status nicht verfügbar" : "Status unavailable"));
+  } catch { alert(currentLanguage === "de" ? "Status nicht verfügbar" : "Status unavailable"); }
 });
 
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 if (SpeechRecognition) {
   const recognition = new SpeechRecognition();
-  recognition.lang = "de-AT";
   recognition.interimResults = false;
-  $("#voice-button").addEventListener("click", () => { recognition.start(); $("#listening-label").textContent = "ich höre zu …"; });
-  recognition.onresult = (event) => { message.value = event.results[0][0].transcript; $("#listening-label").textContent = "verstanden"; };
-  recognition.onerror = () => { $("#listening-label").textContent = "Mikrofon nicht verfügbar"; };
+  $("#voice-button").addEventListener("click", () => { recognition.lang = currentLanguage === "en" ? "en-US" : "de-AT"; recognition.start(); $("#listening-label").textContent = t("listening"); });
+  recognition.onresult = (event) => { message.value = event.results[0][0].transcript; $("#listening-label").textContent = t("understood"); };
+  recognition.onerror = () => { $("#listening-label").textContent = t("micUnavailable"); };
 } else {
   $("#voice-button").disabled = true;
 }
@@ -173,17 +215,19 @@ async function mountVoiceAgent() {
   if (signedUrl) widget.setAttribute("signed-url", signedUrl);
   widget.setAttribute("variant", "expanded");
   widget.setAttribute("dismissible", "false");
-  widget.setAttribute("action-text", "Mit Civic Guide sprechen");
-  widget.setAttribute("start-call-text", "Gespräch starten");
-  widget.setAttribute("end-call-text", "Gespräch beenden");
-  widget.setAttribute("listening-text", "Civic Guide hört zu …");
-  widget.setAttribute("speaking-text", "Civic Guide antwortet …");
+  widget.setAttribute("action-text", t("voiceLaunch"));
+  widget.setAttribute("start-call-text", currentLanguage === "de" ? "Gespräch starten" : "Start conversation");
+  widget.setAttribute("end-call-text", currentLanguage === "de" ? "Gespräch beenden" : "End conversation");
+  widget.setAttribute("listening-text", currentLanguage === "de" ? "Civic Guide hört zu …" : "Civic Guide is listening …");
+  widget.setAttribute("speaking-text", currentLanguage === "de" ? "Civic Guide antwortet …" : "Civic Guide is speaking …");
   widget.setAttribute("avatar-orb-color-1", "#235d79");
   widget.setAttribute("avatar-orb-color-2", "#c86456");
   slot.appendChild(widget);
   slot.hidden = false;
-  $("#agent-status").textContent = "agent verbunden";
-  $("#voice-launch").innerHTML = "<span>◉</span> Gespräch öffnen";
+  agentConnected = true;
+  $("#agent-status").textContent = t("agentConnected");
+  $("#voice-launch").innerHTML = `<span>◉</span> <span id="voice-launch-label">${t("openConversation")}</span>`;
 }
 
+applyLocale();
 mountVoiceAgent();

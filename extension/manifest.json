@@ -1,0 +1,17 @@
+{
+  "manifest_version": 3,
+  "name": "CIVIC GUIDE — Public services, understood",
+  "version": "0.1.0",
+  "description": "Explain Austrian government pages in plain language and find the next safe step.",
+  "minimum_chrome_version": "116",
+  "permissions": ["activeTab", "storage", "sidePanel"],
+  "host_permissions": ["https://*.gv.at/*"],
+  "background": { "service_worker": "background.js", "type": "module" },
+  "action": { "default_title": "Open CIVIC GUIDE" },
+  "side_panel": { "default_path": "sidepanel.html" },
+  "content_scripts": [{
+    "matches": ["https://*.gv.at/*"],
+    "js": ["content.js"],
+    "run_at": "document_idle"
+  ]
+}

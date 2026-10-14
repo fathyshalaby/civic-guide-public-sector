@@ -20,3 +20,13 @@ test("does not invent an answer for an unknown request", () => {
   assert.equal(result.guardrails.humanReviewRequired, true);
   assert.ok(result.questions.length > 0);
 });
+
+test("serves the same verified workflow in English", () => {
+  const result = understand("I moved house and need to register my new address.", "en");
+  assert.equal(result.language, "en");
+  assert.equal(result.intent, "wohnsitz");
+  assert.equal(result.workflow.label, "Register a new address");
+  assert.match(result.reply, /moved|address/i);
+  assert.equal(result.workflow.fields[0].label, "Municipality of the new address");
+  assert.ok(result.sources[0].authority === "oesterreich.gv.at");
+});

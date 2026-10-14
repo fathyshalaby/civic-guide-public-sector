@@ -15,3 +15,12 @@ test("voice tools accept the configured ElevenLabs secret", () => {
   );
   assert.equal(response, null);
 });
+
+test("voice tools reject a wrong ElevenLabs secret", async () => {
+  const response = requireToolSecret(
+    new Request("https://civic.test/api/voice-guidance", { headers: { "x-elevenlabs-tool-secret": "wrong-secret" } }),
+    { ELEVENLABS_TOOL_SECRET: "test-secret" },
+  );
+  assert.equal(response.status, 401);
+  assert.equal((await response.json()).ok, false);
+});

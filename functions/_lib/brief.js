@@ -45,3 +45,17 @@ export function buildCitizenCaseBrief(result, channel = "web", fields = {}) {
     traceId: result.traceId,
   };
 }
+
+export function markBriefPrepared(brief, submission = {}) {
+  const caseLabel = submission.caseId ? `Demo case ${submission.caseId}` : "Handoff prepared for review";
+  return {
+    ...brief,
+    guardrails: { ...brief.guardrails, submitted: false, humanReviewRequired: true },
+    handoff: {
+      ...brief.handoff,
+      status: "prepared",
+      consent: true,
+      summary: `${brief.handoff.summary} · ${caseLabel}`,
+    },
+  };
+}

@@ -22,6 +22,15 @@ a `CitizenCaseBrief` for a human worker. See
 [`docs/TEAM-PITCH-BRIEF.md`](docs/TEAM-PITCH-BRIEF.md) for the team story and
 [`docs/PHONE-AGENT.md`](docs/PHONE-AGENT.md) for the live voice setup.
 
+### Submission pack
+
+- [`docs/STRATEGY.md`](docs/STRATEGY.md) — problem, users, alternatives and pilot case.
+- [`docs/TECHNICAL.md`](docs/TECHNICAL.md) — architecture, data boundaries and deployment.
+- [`docs/DEMO-SCRIPT.md`](docs/DEMO-SCRIPT.md) — the 90-second judge walkthrough.
+- [`docs/EVALUATION.md`](docs/EVALUATION.md) — evidence mapped to the judging criteria.
+- [`docs/SUBMISSION.md`](docs/SUBMISSION.md) — ready-to-paste submission copy.
+- [`tests/`](tests/) — executable proof for workflows, guardrails, channels and UI contracts.
+
 The product is intentionally honest about uncertainty. Unknown requests go to a human-handoff state instead of receiving an invented answer.
 
 ## Channels

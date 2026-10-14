@@ -29,9 +29,9 @@
     return {
       title: document.title,
       url: location.href,
-      selection: selection.slice(0, 4000),
+      selection: selection.slice(0, 6000),
       headings,
-      visibleCopy: visibleCopy.slice(0, 4000),
+      visibleCopy: visibleCopy.slice(0, 3000),
     };
   }
 

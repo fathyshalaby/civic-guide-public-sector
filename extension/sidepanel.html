@@ -23,6 +23,12 @@
       <a id="context-link" class="context-link" href="#" target="_blank" rel="noreferrer" hidden></a>
       <button id="use-page" class="secondary" type="button" data-i18n="usePage">Diese Seite als Kontext verwenden</button>
     </section>
+    <section id="context-review" class="context-review" hidden aria-live="polite">
+      <div class="review-heading"><span class="mini-label" data-i18n="reviewLabel">Was wird gesendet?</span><span id="context-count" class="count"></span></div>
+      <p id="context-preview" class="context-preview"></p>
+      <p class="privacy-note" data-i18n="privacyDetail">Nur dieser sichtbare, ausgewählte Kontext wird gesendet. Keine Formulare oder Kontodaten.</p>
+      <p id="context-warning" class="context-warning" role="status"></p>
+    </section>
     <form id="guide-form">
       <label for="question" data-i18n="questionLabel">Deine Frage</label>
       <textarea id="question" rows="4" placeholder="z. B. Was muss ich hier vorbereiten?" required></textarea>
@@ -35,6 +41,11 @@
       <div id="questions" class="questions"></div>
       <div id="sources" class="sources"></div>
       <div class="answer-actions"><button id="copy" class="secondary" type="button" data-i18n="copy">Zusammenfassung kopieren</button><a id="open-source" class="source-button" href="#" target="_blank" rel="noreferrer" hidden data-i18n="openSource">Quelle öffnen ↗</a></div>
+    </section>
+    <section id="brief" class="brief" hidden aria-live="polite">
+      <div class="brief-top"><span class="eyebrow" data-i18n="briefEyebrow">CIVIC DESK · BRIEF</span><span id="brief-status" class="brief-status"></span></div>
+      <div class="brief-block"><div id="brief-service"></div><div id="brief-missing"></div><div id="brief-next"></div><div id="brief-sources"></div></div>
+      <div class="answer-actions"><button id="copy-brief" class="secondary" type="button" data-i18n="copyBrief">Zusammenfassung kopieren</button></div>
     </section>
   </main>
   <details class="settings"><summary data-i18n="settings">Verbindung</summary><label for="api-base" data-i18n="apiLabel">CIVIC API URL</label><input id="api-base" type="url" value="http://localhost:8796" /><button id="save-api" class="secondary" type="button" data-i18n="save">Speichern</button></details>

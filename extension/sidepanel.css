@@ -46,3 +46,22 @@ textarea:focus, input[type=url]:focus { border-color: var(--blue); box-shadow: 0
 .settings input { margin: 12px 0 8px; font-size: 11px; }
 .settings .secondary { display: block; }
 :focus-visible { outline: 3px solid rgba(200,100,86,.65); outline-offset: 2px; }
+.context-review { margin-top: 12px; padding: 12px; color: var(--muted); background: #f5f7f7; border: 1px solid var(--line); }
+.review-heading, .brief-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.review-heading .mini-label { margin: 0; }
+.count { color: var(--blue); font: 10px var(--mono); }
+.context-preview { max-height: 115px; overflow: auto; margin: 10px 0 8px; padding: 9px; color: var(--ink); background: #fff; border-left: 2px solid var(--coral); font-size: 11px; line-height: 1.45; white-space: pre-wrap; }
+.context-warning { margin: 8px 0 0; color: var(--coral); font-size: 10px; line-height: 1.4; }
+.brief { margin-top: 18px; padding: 15px; background: var(--paper); border-top: 3px solid var(--blue); border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); border-left: 1px solid var(--line); }
+.brief-status { color: #80544a; font: 10px var(--mono); text-transform: uppercase; }
+.brief-block { margin-top: 13px; }
+.brief-block > div { padding-top: 12px; border-top: 1px solid var(--line); }
+.brief-block h3 { margin: 0 0 7px; color: var(--ink); font-size: 17px; line-height: 1.1; letter-spacing: -.04em; }
+.brief-block p:not(.mini-label) { margin: 0 0 9px; color: var(--muted); font-size: 11px; line-height: 1.45; }
+.brief-next { color: var(--blue) !important; font-size: 14px !important; }
+.brief-muted { font-size: 10px !important; }
+.brief-row { display: flex; gap: 8px; margin: 0 0 8px; color: var(--coral); font-size: 13px; }
+.brief-row p { color: var(--ink) !important; }
+.brief-row small { display: block; margin-top: 2px; color: var(--muted); font-size: 10px; }
+.brief-source { display: block; padding: 8px 0; color: var(--blue); border-top: 1px solid var(--line); font-size: 11px; text-decoration: none; }
+.brief-source small { display: block; margin-top: 3px; color: var(--muted); font-size: 9px; }

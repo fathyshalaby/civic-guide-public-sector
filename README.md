@@ -15,6 +15,13 @@ The important distinction is deliberate: this is not another open-ended governme
 5. It prepares a structured handoff only after the citizen confirms.
 6. A deterministic demo case ID is returned. A real public-service API can be connected through `functions/_lib/services.js`.
 
+The product has three deliverables but one engine: the web app is the flagship
+journey, the Chrome extension explains official text in context, and the
+ElevenLabs phone/WhatsApp agent uses the same guarded tools. All three produce
+a `CitizenCaseBrief` for a human worker. See
+[`docs/TEAM-PITCH-BRIEF.md`](docs/TEAM-PITCH-BRIEF.md) for the team story and
+[`docs/PHONE-AGENT.md`](docs/PHONE-AGENT.md) for the live voice setup.
+
 The product is intentionally honest about uncertainty. Unknown requests go to a human-handoff state instead of receiving an invented answer.
 
 ## Channels
@@ -60,7 +67,11 @@ Use the same agent everywhere:
 2. For phone, import a purchased Twilio number in the ElevenLabs Phone Numbers section and assign the agent.
 3. For WhatsApp, import the WhatsApp Business account in ElevenLabs, assign the agent, and enable messaging and optional voice-note responses.
 
-There is no custom Twilio or WhatsApp conversation server in this repo. ElevenLabs owns the conversation state, turn-taking, voice notes, phone routing and WhatsApp session lifecycle; Cloudflare only exposes the two secure workflow tools.
+There is no custom Twilio or WhatsApp conversation server in this repo.
+ElevenLabs owns the conversation state, turn-taking, voice notes, phone routing
+and WhatsApp session lifecycle; Cloudflare owns the source-backed workflow
+logic and exposes the two secure tools. The exact agent prompt, payloads and
+fallback transcript are in [`docs/PHONE-AGENT.md`](docs/PHONE-AGENT.md).
 
 ### Chrome extension: CIVIC GUIDE on government pages
 

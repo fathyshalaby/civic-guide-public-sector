@@ -27,6 +27,12 @@ The Chrome Manifest V3 extension is a thin client on the same read-only
 user-requested page context from an Austrian government domain. It never reads
 form values, password inputs or hidden page content.
 
+All three channels produce the same `CitizenCaseBrief`: original request,
+detected service and confidence, plain-language summary, known facts, missing
+questions, recommended next step, official sources and explicit handoff
+guardrails. The web and extension render it for a citizen/worker; the phone
+agent receives it through the secured ElevenLabs tools.
+
 ## Safety boundary
 
 `functions/_lib/knowledge.js` is the source-backed workflow registry. The
@@ -49,6 +55,12 @@ The browser uses the ElevenLabs ConvAI web component when an agent ID or
 server-issued signed URL is available. Phone and WhatsApp use the native
 ElevenLabs integrations, so the repository does not need separate channel
 state machines. All channels call the same guidance and handoff tools.
+
+ElevenLabs owns conversation state and channel routing. Cloudflare Pages
+Functions own source-backed classification, bounded context handling, consent
+checks and the mock/live service adapter. If ElevenLabs credentials are absent,
+the web and extension remain fully usable and the phone contract can be tested
+with signed local requests.
 
 ## Data handling
 

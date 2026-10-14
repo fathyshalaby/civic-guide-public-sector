@@ -1,4 +1,5 @@
 import { challenge } from "/challenge.config.js";
+import { formatBrief, renderBrief } from "/brief.js";
 
 const $ = (selector) => document.querySelector(selector);
 const form = $("#assistant-form");
@@ -10,10 +11,10 @@ let agentConnected = false;
 
 const locale = {
   de: {
-    secureLabel: "sichere demo", status: "status", heroEyebrow: "Digital Assistants · Evolution bis 2030", heroTitle: "Verwaltung,<br /><em>verständlich.</em>", heroLede: "Erzähl, was passiert ist. CIVIC / GUIDE übersetzt deine Worte in den richtigen Amtsweg, erklärt ihn verständlich und zeigt, was als Nächstes wirklich zu tun ist.", principleListen: "01 / zuhören", principleMap: "02 / einordnen", principleHandoff: "03 / übergeben", demoReady: "demo bereit", agentQuote: "„Ich bin umgezogen. Was muss ich jetzt erledigen?“", agentResult: "Wohnsitz anmelden", agentMeta: "2 Rückfragen · 3 klare Schritte", voiceLaunch: "Mit dem Guide sprechen", agentFootnote: "Jede Antwort bleibt nachvollziehbar. Keine Entscheidung ohne dich.", deskTitle: "Womit kann ich helfen?", deskTime: "Heute · online", exampleMove: "Ich bin umgezogen.", exampleMoveTag: "Wohnsitz anmelden →", examplePassport: "Mein Reisepass ist abgelaufen.", examplePassportTag: "Pass erneuern →", exampleIdentity: "Wie bekomme ich eine ID Austria?", exampleIdentityTag: "Digitale Identität →", messageLabel: "Dein Anliegen", messagePlaceholder: "Beschreibe dein Anliegen in deinen eigenen Worten …", voiceInput: "Spracheingabe", nextStep: "Nächsten Schritt zeigen", answerTitle: "Das ist der nächste Schritt.", readAloud: "Vorlesen", yourPath: "dein amtsweg", prepareHandoff: "Übergabe vorbereiten", humanLoopTitle: "Hier bleibt ein Mensch im Loop.", humanLoopBody: "Das Anliegen ist nicht eindeutig genug für eine sichere Zuordnung. Nutze die Quelle oder gib diese Zusammenfassung an eine zuständige Stelle weiter.", traceable: "nachvollziehbar", officialSources: "Offizielle Quellen", footerChallenge: "public sector challenge", footerTrust: "plain language · human oversight", plainWords: "In klaren Worten", needsMore: "Dafür brauche ich noch", recognized: "Erkannte Hinweise", safeMode: "Sicherheitsmodus", safeModeBody: "Kein passender Vorgang erkannt — ich erfinde keine Antwort.", sourceBacked: "● quellenbasiert", noLegal: "keine Rechtsentscheidung", humanReview: "menschliche Prüfung bleibt möglich", confidence: "sicher", demoInserted: "Beispiel eingesetzt — du kannst es jetzt sprechen oder senden", agentConnected: "agent verbunden", openConversation: "Gespräch öffnen", listening: "ich höre zu …", understood: "verstanden", micUnavailable: "Mikrofon nicht verfügbar", ordering: "ordne zu …", workflowNote: "Die folgenden Angaben helfen, eine sichere Übergabe vorzubereiten.", preparing: "wird vorbereitet …", consentError: "Bitte bestätige zuerst, dass du die Angaben geprüft hast.", handoffTitle: "Übergabe vorbereiten", handoffBody: "Diese Angaben helfen, deinen Vorgang zusammenzufassen. Es wird noch nichts an eine Behörde übermittelt.", consent: "Ich habe die Angaben geprüft und möchte die Demo-Übergabe vorbereiten.", back: "Zurück", prepare: "Ja, vorbereiten", prepared: "übergabe vorbereitet", documented: "Der nächste Schritt ist dokumentiert.", demoCase: "Demo-Vorgangsnummer", liveNote: "Im Live-Modus würde die Anfrage jetzt an das angeschlossene Service-System übergeben — erst nach dessen eigener Prüfung.", auditDemo: "Audit-Demo ohne Datenbankbindung"
+    secureLabel: "sichere demo", status: "status", heroEyebrow: "Digital Assistants · Evolution bis 2030", heroTitle: "Verwaltung,<br /><em>verständlich.</em>", heroLede: "Erzähl, was passiert ist. CIVIC / GUIDE übersetzt deine Worte in den richtigen Amtsweg, erklärt ihn verständlich und zeigt, was als Nächstes wirklich zu tun ist.", principleListen: "01 / zuhören", principleMap: "02 / einordnen", principleHandoff: "03 / übergeben", demoReady: "demo bereit", agentQuote: "„Ich bin umgezogen. Was muss ich jetzt erledigen?“", agentResult: "Wohnsitz anmelden", agentMeta: "2 Rückfragen · 3 klare Schritte", voiceLaunch: "Mit dem Guide sprechen", agentFootnote: "Jede Antwort bleibt nachvollziehbar. Keine Entscheidung ohne dich.", evidencePlain: "klare Sprache", evidenceSource: "offizielle Quelle", evidenceHandoff: "menschliche Übergabe", deskTitle: "Womit kann ich helfen?", deskTime: "Heute · online", exampleMove: "Ich bin umgezogen.", exampleMoveTag: "Wohnsitz anmelden →", examplePassport: "Mein Reisepass ist abgelaufen.", examplePassportTag: "Pass erneuern →", exampleIdentity: "Wie bekomme ich eine ID Austria?", exampleIdentityTag: "Digitale Identität →", messageLabel: "Dein Anliegen", messagePlaceholder: "Beschreibe dein Anliegen in deinen eigenen Worten …", voiceInput: "Spracheingabe", nextStep: "Nächsten Schritt zeigen", answerTitle: "Das ist der nächste Schritt.", readAloud: "Vorlesen", yourPath: "dein amtsweg", prepareHandoff: "Übergabe vorbereiten", humanLoopTitle: "Hier bleibt ein Mensch im Loop.", humanLoopBody: "Das Anliegen ist nicht eindeutig genug für eine sichere Zuordnung. Nutze die Quelle oder gib diese Zusammenfassung an eine zuständige Stelle weiter.", traceable: "nachvollziehbar", officialSources: "Offizielle Quellen", briefTitle: "Für die zuständige Stelle vorbereitet.", copyBrief: "Zusammenfassung kopieren", printBrief: "Drucken / PDF", footerChallenge: "public sector challenge", footerTrust: "plain language · human oversight", plainWords: "In klaren Worten", needsMore: "Dafür brauche ich noch", recognized: "Erkannte Hinweise", safeMode: "Sicherheitsmodus", safeModeBody: "Kein passender Vorgang erkannt — ich erfinde keine Antwort.", sourceBacked: "● quellenbasiert", noLegal: "keine Rechtsentscheidung", humanReview: "menschliche Prüfung bleibt möglich", confidence: "sicher", demoInserted: "Beispiel eingesetzt — du kannst es jetzt sprechen oder senden", agentConnected: "agent verbunden", openConversation: "Gespräch öffnen", listening: "ich höre zu …", understood: "verstanden", micUnavailable: "Mikrofon nicht verfügbar", ordering: "ordne zu …", workflowNote: "Die folgenden Angaben helfen, eine sichere Übergabe vorzubereiten.", preparing: "wird vorbereitet …", consentError: "Bitte bestätige zuerst, dass du die Angaben geprüft hast.", handoffTitle: "Übergabe vorbereiten", handoffBody: "Diese Angaben helfen, deinen Vorgang zusammenzufassen. Es wird noch nichts an eine Behörde übermittelt.", consent: "Ich habe die Angaben geprüft und möchte die Demo-Übergabe vorbereiten.", back: "Zurück", prepare: "Ja, vorbereiten", prepared: "Übergabe vorbereitet", documented: "Der nächste Schritt ist dokumentiert.", demoCase: "Demo-Vorgangsnummer", liveNote: "Im Live-Modus würde die Anfrage jetzt an das angeschlossene Service-System übergeben — erst nach dessen eigener Prüfung.", auditDemo: "Audit-Demo ohne Datenbankbindung"
   },
   en: {
-    secureLabel: "safe demo", status: "status", heroEyebrow: "Digital Assistants · Evolution to 2030", heroTitle: "Public services,<br /><em>understood.</em>", heroLede: "Tell us what happened. CIVIC / GUIDE turns your words into the right public-service path, explains it clearly and shows what to do next.", principleListen: "01 / listen", principleMap: "02 / map", principleHandoff: "03 / hand over", demoReady: "demo ready", agentQuote: "“I moved house. What do I need to do now?”", agentResult: "Register a new address", agentMeta: "2 questions · 3 clear steps", voiceLaunch: "Speak with the Guide", agentFootnote: "Every answer shows its source. Nothing is decided without you.", deskTitle: "How can I help?", deskTime: "Today · online", exampleMove: "I moved house.", exampleMoveTag: "Register a new address →", examplePassport: "My passport has expired.", examplePassportTag: "Renew a passport →", exampleIdentity: "How do I get ID Austria?", exampleIdentityTag: "Digital identity →", messageLabel: "Your question", messagePlaceholder: "Describe your question in your own words …", voiceInput: "Voice input", nextStep: "Show the next step", answerTitle: "Here is the next step.", readAloud: "Read aloud", yourPath: "your public-service path", prepareHandoff: "Prepare handoff", humanLoopTitle: "A person stays in the loop.", humanLoopBody: "This question is not clear enough for a safe match. Use the source or share this summary with the responsible office.", traceable: "traceable", officialSources: "Official sources", footerChallenge: "public sector challenge", footerTrust: "plain language · human oversight", plainWords: "In clear words", needsMore: "I still need", recognized: "Signals found", safeMode: "Safety mode", safeModeBody: "No matching process was found — I will not make up an answer.", sourceBacked: "● source-backed", noLegal: "not a legal decision", humanReview: "human review remains possible", confidence: "confidence", demoInserted: "Example inserted — you can speak or send it now", agentConnected: "agent connected", openConversation: "Open conversation", listening: "listening …", understood: "understood", micUnavailable: "Microphone unavailable", ordering: "matching …", workflowNote: "These details help prepare a safe handoff.", preparing: "preparing …", consentError: "Please confirm that you checked the information first.", handoffTitle: "Prepare handoff", handoffBody: "These details help summarize your request. Nothing is sent to a public office yet.", consent: "I checked the information and want to prepare the demo handoff.", back: "Back", prepare: "Yes, prepare", prepared: "handoff prepared", documented: "The next step is documented.", demoCase: "Demo case number", liveNote: "In live mode, the request would now be handed to the connected service system — only after its own review.", auditDemo: "Demo audit without database binding"
+    secureLabel: "safe demo", status: "status", heroEyebrow: "Digital Assistants · Evolution to 2030", heroTitle: "Public services,<br /><em>understood.</em>", heroLede: "Tell us what happened. CIVIC / GUIDE turns your words into the right public-service path, explains it clearly and shows what to do next.", principleListen: "01 / listen", principleMap: "02 / map", principleHandoff: "03 / hand over", demoReady: "demo ready", agentQuote: "“I moved house. What do I need to do now?”", agentResult: "Register a new address", agentMeta: "2 questions · 3 clear steps", voiceLaunch: "Speak with the Guide", agentFootnote: "Every answer shows its source. Nothing is decided without you.", evidencePlain: "plain language", evidenceSource: "official source", evidenceHandoff: "human handoff", deskTitle: "How can I help?", deskTime: "Today · online", exampleMove: "I moved house.", exampleMoveTag: "Register a new address →", examplePassport: "My passport has expired.", examplePassportTag: "Renew a passport →", exampleIdentity: "How do I get ID Austria?", exampleIdentityTag: "Digital identity →", messageLabel: "Your question", messagePlaceholder: "Describe your question in your own words …", voiceInput: "Voice input", nextStep: "Show the next step", answerTitle: "Here is the next step.", readAloud: "Read aloud", yourPath: "your public-service path", prepareHandoff: "Prepare handoff", humanLoopTitle: "A person stays in the loop.", humanLoopBody: "This question is not clear enough for a safe match. Use the source or share this summary with the responsible office.", traceable: "traceable", officialSources: "Official sources", briefTitle: "Prepared for the responsible office.", copyBrief: "Copy summary", printBrief: "Print / PDF", footerChallenge: "public sector challenge", footerTrust: "plain language · human oversight", plainWords: "In clear words", needsMore: "I still need", recognized: "Signals found", safeMode: "Safety mode", safeModeBody: "No matching process was found — I will not make up an answer.", sourceBacked: "● source-backed", noLegal: "not a legal decision", humanReview: "human review remains possible", confidence: "confidence", demoInserted: "Example inserted — you can speak or send it now", agentConnected: "agent connected", openConversation: "Open conversation", listening: "listening …", understood: "understood", micUnavailable: "Microphone unavailable", ordering: "matching …", workflowNote: "These details help prepare a safe handoff.", preparing: "preparing …", consentError: "Please confirm that you checked the information first.", handoffTitle: "Prepare handoff", handoffBody: "These details help summarize your request. Nothing is sent to a public office yet.", consent: "I checked the information and want to prepare the demo handoff.", back: "Back", prepare: "Yes, prepare", prepared: "Handoff prepared", documented: "The next step is documented.", demoCase: "Demo case number", liveNote: "In live mode, the request would now be handed to the connected service system — only after its own review.", auditDemo: "Demo audit without database binding"
   }
 };
 
@@ -80,6 +81,44 @@ function renderSources(sources = []) {
   return sources.map((source) => `<a href="${escape(source.url)}" target="_blank" rel="noreferrer"><span class="source-name">${escape(source.label)}</span><span class="source-meta">${escape(source.authority || "offizielle Quelle")} · ${escape(source.why || "Nachweis")}</span><span class="source-arrow">↗</span></a>`).join("");
 }
 
+function briefCopy() {
+  return {
+    title: "CIVIC / GUIDE case brief",
+    status: currentLanguage === "de" ? "Status" : "Status",
+    prepared: t("prepared"),
+    review: currentLanguage === "de" ? "Bereit zur Prüfung" : "Ready to review",
+    original: currentLanguage === "de" ? "Originalanliegen" : "Original request",
+    service: currentLanguage === "de" ? "Wahrscheinlicher Amtsweg" : "Likely service",
+    confidence: t("confidence"),
+    human: currentLanguage === "de" ? "Menschliche Klärung" : "Human review",
+    humanBody: currentLanguage === "de" ? "Eine zuständige Person sollte dieses Anliegen vor dem nächsten Schritt klären." : "A responsible person should clarify this request before the next step.",
+    summary: currentLanguage === "de" ? "Zusammenfassung in klaren Worten" : "Plain-language summary",
+    facts: currentLanguage === "de" ? "Angaben vorhanden" : "Facts provided",
+    missing: t("needsMore"),
+    next: currentLanguage === "de" ? "Empfohlener nächster Schritt" : "Recommended next step",
+    sources: t("officialSources"),
+    humanReview: t("humanReview"),
+    noFacts: currentLanguage === "de" ? "Noch keine persönlichen Angaben ergänzt." : "No personal facts have been added yet.",
+    notSubmitted: currentLanguage === "de" ? "Für die Prüfung vorbereitet; noch nicht an eine Behörde übermittelt." : "Prepared for review; not submitted to a government system.",
+  };
+}
+
+function showBrief(result) {
+  const brief = result?.staffBrief;
+  if (!brief) return;
+  const section = $("#brief-section");
+  const rendered = renderBrief(result, briefCopy());
+  section.hidden = false;
+  $("#brief-original").innerHTML = rendered.original;
+  $("#brief-service").innerHTML = rendered.service;
+  $("#brief-missing").innerHTML = rendered.missing;
+  $("#brief-next-step").innerHTML = rendered.next;
+  $("#brief-sources").innerHTML = rendered.sources;
+  $("#brief-status").textContent = rendered.status;
+  $("#brief-status").className = `brief-status ${rendered.statusClass}`;
+  $("#human-help").textContent = rendered.humanHelp;
+}
+
 function render(result) {
   state.result = result;
   answerSection.hidden = false;
@@ -101,6 +140,7 @@ function render(result) {
   $("#handoff-card").hidden = !result.humanHandoff;
   $("#sources").innerHTML = renderSources(result.sources);
   $("#submit-panel").hidden = true;
+  showBrief(result);
   answerSection.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
@@ -147,8 +187,12 @@ async function submitCase() {
   button.disabled = true;
   button.textContent = t("preparing");
   try {
-    const response = await fetch("/api/submit", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ workflow: state.result.workflow.id, fields, traceId: state.result.traceId, confirm: true, idempotencyKey: globalThis.crypto?.randomUUID?.() }) });
+    const response = await fetch("/api/submit", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ workflow: state.result.workflow.id, fields, language: currentLanguage, traceId: state.result.traceId, confirm: true, idempotencyKey: globalThis.crypto?.randomUUID?.() }) });
     const data = await response.json();
+    if (response.ok && data.staffBrief) {
+      state.result = { ...state.result, staffBrief: data.staffBrief };
+      showBrief(state.result);
+    }
     panel.innerHTML = response.ok ? `<div class="success-mark">✓</div><div><p class="eyebrow">${t("prepared")}</p><h3>${t("documented")}</h3><p>${t("demoCase")} <strong>${escape(data.caseId || data.idempotencyKey)}</strong>. ${t("liveNote")}</p><p class="trace-id">${escape(data.audit?.persisted ? (currentLanguage === "de" ? "Audit-Ereignis gespeichert" : "Audit event stored") : t("auditDemo"))}</p></div>` : `<div><p class="eyebrow">${currentLanguage === "de" ? "nicht übermittelt" : "not submitted"}</p><h3>${currentLanguage === "de" ? "Die Anfrage blieb bei dir." : "The request stayed with you."}</h3><p>${escape(data.error || (currentLanguage === "de" ? "Bitte versuche es erneut." : "Please try again."))}</p>${data.details?.missing?.length ? `<p class="muted-note">${currentLanguage === "de" ? "Fehlt noch" : "Still needed"}: ${escape(data.details.missing.join(", "))}</p>` : ""}</div><div class="submit-actions"><button id="close-submit" class="secondary-button" type="button">${t("back")}</button></div>`;
     $("#close-submit")?.addEventListener("click", () => { panel.hidden = true; });
   } catch (cause) {
@@ -162,6 +206,15 @@ form.addEventListener("submit", (event) => { event.preventDefault(); if (message
 document.querySelectorAll("[data-example-key]").forEach((button) => button.addEventListener("click", () => { message.value = button.dataset.example; message.focus(); }));
 $("#read-button").addEventListener("click", () => { if (state.result) speak(state.result.reply); });
 $("#start-workflow").addEventListener("click", showSubmitPanel);
+$("#copy-brief").addEventListener("click", async () => {
+  if (!state.result?.staffBrief) return;
+  await navigator.clipboard?.writeText(formatBrief(state.result, briefCopy()));
+  const button = $("#copy-brief");
+  const original = t("copyBrief");
+  button.textContent = currentLanguage === "de" ? "Kopiert" : "Copied";
+  setTimeout(() => { button.textContent = original; }, 1400);
+});
+$("#print-brief").addEventListener("click", () => window.print());
 $("#voice-launch").addEventListener("click", () => {
   const widget = $("#agent-widget-slot");
   if (!widget.hidden) {

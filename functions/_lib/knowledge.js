@@ -93,7 +93,7 @@ export const WORKFLOWS = {
     id: "familienbeihilfe",
     label: "Familienbeihilfe prüfen",
     description: "Den nächsten Schritt für eine Familienbeihilfe-Anfrage klären.",
-    keywords: ["familienbeihilfe", "familie", "kind", "kinderbeihilfe", "kinderbetreuungsgeld", "geburt", "finanzamt", "family allowance", "child benefit", "childcare", "child care", "birth", "tax office"],
+    keywords: ["familienbeihilfe", "familie", "kind", "kinderbeihilfe", "kinderbetreuungsgeld", "geburt", "finanzamt", "family allowance", "child benefit", "birth", "tax office"],
     reply: "Die Familienbeihilfe wird in Österreich grundsätzlich über das Finanzamt Österreich abgewickelt. Ich kann dir die Voraussetzungen und den nächsten Schritt in verständlicher Form zeigen.",
     plainLanguage: ["Die Leistung hängt unter anderem von Wohnsitz und Haushaltszugehörigkeit ab.", "Für manche Fälle wird die Familienbeihilfe automatisch geprüft.", "Bei Änderungen solltest du die zuständige Stelle informieren."],
     questions: ["Geht es um einen neuen Antrag oder um eine Änderung?", "Für welches Kind möchtest du die Information?"],
@@ -111,7 +111,40 @@ export const WORKFLOWS = {
       sources: [{ label: "Family allowance", url: `${BASE}/en/themen/familie_und_partnerschaft/finanzielle_unterstuetzungen/Seite.080710.html`, authority: "oesterreich.gv.at", why: "Official benefit information" }],
     },
   },
+  kinderbetreuung: {
+    id: "kinderbetreuung",
+    label: "Kinderbetreuung unterstützen lassen",
+    description: "Den nächsten sicheren Schritt für eine Frage zu Kinderbetreuung und Betreuungskosten klären.",
+    keywords: ["kinderbetreuung", "kindergarten", "krippe", "hort", "betreuungskosten", "childcare", "daycare", "nursery", "child care", "subsidy"],
+    reply: "Bei Fragen zu Kinderbetreuung oder Betreuungskosten hängt der nächste Schritt von Wohnort, Betreuungsform und deiner persönlichen Situation ab. Ich zeige dir die offizielle Information und bereite die offenen Fragen für eine zuständige Stelle vor.",
+    plainLanguage: ["Prüfe zuerst, um welche Betreuungsform und welche Gemeinde es geht.", "Unterstützungen können unterschiedliche Voraussetzungen und zuständige Stellen haben.", "Eine zuständige Stelle muss deinen konkreten Anspruch prüfen."],
+    questions: ["In welcher Gemeinde findet die Kinderbetreuung statt?", "Geht es um einen neuen Antrag oder eine bestehende Unterstützung?"],
+    steps: ["Gemeinde und Betreuungsform klären", "Offizielle Voraussetzungen prüfen", "Anfrage oder Antrag bei der zuständigen Stelle vorbereiten"],
+    fields: [{ id: "municipality", label: "Gemeinde", placeholder: "z. B. Wien, Graz oder Linz", type: "text" }, { id: "requestType", label: "Art der Anfrage", placeholder: "Neuer Antrag, Änderung oder allgemeine Frage", type: "text" }],
+    sources: [{ label: "Familie und finanzielle Unterstützung", url: `${BASE}/de/themen/familie_und_partnerschaft/finanzielle_unterstuetzungen/Seite.080710.html`, authority: "oesterreich.gv.at", why: "Offizielle Information zu finanzieller Unterstützung" }],
+    en: {
+      label: "Find childcare support",
+      description: "Clarify the next safe step for a childcare or childcare-cost question.",
+      reply: "For childcare or childcare-cost questions, the next step depends on the municipality, type of care and your situation. I will show the official information and prepare the open questions for the responsible office.",
+      plainLanguage: ["First identify the municipality and type of childcare.", "Different support schemes can have different requirements and responsible offices.", "A responsible office must check your individual eligibility."],
+      questions: ["Which municipality provides the childcare?", "Is this a new application or an existing support arrangement?"],
+      steps: ["Clarify the municipality and type of care", "Check the official requirements", "Prepare the question or application for the responsible office"],
+      fields: [{ id: "municipality", label: "Municipality", placeholder: "e.g. Vienna, Graz or Linz", type: "text" }, { id: "requestType", label: "Type of request", placeholder: "New application, change or general question", type: "text" }],
+      sources: [{ label: "Family and financial support", url: `${BASE}/en/themen/familie_und_partnerschaft/finanzielle_unterstuetzungen/Seite.080710.html`, authority: "oesterreich.gv.at", why: "Official information about financial support" }],
+    },
+  },
 };
+
+function normalizeInput(message) {
+  return String(message || "")
+    .toLowerCase()
+    .replace(/[’']/g, "'")
+    .replace(/\bmeldezettl\b/g, "meldezettel")
+    .replace(/\breisepas\b/g, "reisepass")
+    .replace(/\bkindebetreuung\b/g, "kinderbetreuung")
+    .replace(/\s+/g, " ")
+    .trim();
+}
 
 export function detectWorkflow(message) {
   const ranked = rankWorkflows(message);
@@ -119,7 +152,7 @@ export function detectWorkflow(message) {
 }
 
 export function rankWorkflows(message) {
-  const input = String(message || "").toLowerCase();
+  const input = normalizeInput(message);
   return Object.values(WORKFLOWS)
     .map((workflow) => ({ workflow, score: workflow.keywords.reduce((score, keyword) => score + (input.includes(keyword) ? 1 : 0), 0) }))
     .sort((a, b) => b.score - a.score);

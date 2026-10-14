@@ -51,7 +51,13 @@ test("stops and asks when one message combines equally strong service intents", 
 
 test("recognizes the brief's childcare-subsidy style wording", () => {
   const result = understand("I need help with childcare costs for my child.", "en");
-  assert.equal(result.intent, "familienbeihilfe");
-  assert.equal(result.workflow.label, "Check family allowance");
+  assert.equal(result.intent, "kinderbetreuung");
+  assert.equal(result.workflow.label, "Find childcare support");
+  assert.equal(result.humanHandoff, false);
+});
+
+test("keeps typo-tolerant matching deterministic for a colloquial residence request", () => {
+  const result = understand("Bin umgezogen, brauch Meldezettl");
+  assert.equal(result.intent, "wohnsitz");
   assert.equal(result.humanHandoff, false);
 });

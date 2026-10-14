@@ -1,12 +1,17 @@
 import { getWorkflow, rankWorkflows } from "./knowledge.js";
+import { buildCitizenCaseBrief } from "./brief.js";
 
 function traceId() { return globalThis.crypto?.randomUUID?.() || `civic-${Date.now().toString(36)}`; }
 
 function normalizeLanguage(language) { return language === "en" ? "en" : "de"; }
 
+function attachBrief(result, channel = "web") {
+  return { ...result, staffBrief: buildCitizenCaseBrief(result, channel) };
+}
+
 function fallback(message, language = "de", options = {}) {
   const ambiguous = options.ambiguous || [];
-  if (language === "en") return {
+  if (language === "en") return attachBrief({
     language,
     intent: "unknown",
     confidence: ambiguous.length ? 0.34 : 0.18,
@@ -20,8 +25,8 @@ function fallback(message, language = "de", options = {}) {
     traceId: traceId(),
     matchedSignals: options.matchedSignals || [],
     originalMessage: message,
-  };
-  return {
+  });
+  return attachBrief({
     language,
     intent: "unknown",
     confidence: ambiguous.length ? 0.34 : 0.18,
@@ -35,7 +40,7 @@ function fallback(message, language = "de", options = {}) {
     traceId: traceId(),
     matchedSignals: options.matchedSignals || [],
     originalMessage: message,
-  };
+  });
 }
 
 export function understand(message, preferredLanguage = "de") {
@@ -52,7 +57,7 @@ export function understand(message, preferredLanguage = "de") {
   const workflow = top.workflow;
   const localized = getWorkflow(workflow.id, language);
   const matchedSignals = workflow.keywords.filter((keyword) => input.toLowerCase().includes(keyword));
-  return { language, intent: workflow.id, confidence: Math.min(0.98, 0.66 + matchedSignals.length * 0.08), matchedSignals, reply: localized.reply, plainLanguage: localized.plainLanguage, questions: localized.questions, workflow: { id: workflow.id, label: localized.label, description: localized.description, steps: localized.steps, fields: localized.fields }, sources: localized.sources, humanHandoff: false, guardrails: { sourceBacked: true, legalDecision: false, humanReviewRequired: true }, traceId: traceId(), originalMessage: input };
+  return attachBrief({ language, intent: workflow.id, confidence: Math.min(0.98, 0.66 + matchedSignals.length * 0.08), matchedSignals, reply: localized.reply, plainLanguage: localized.plainLanguage, questions: localized.questions, workflow: { id: workflow.id, label: localized.label, description: localized.description, steps: localized.steps, fields: localized.fields }, sources: localized.sources, humanHandoff: false, guardrails: { sourceBacked: true, legalDecision: false, humanReviewRequired: true }, traceId: traceId(), originalMessage: input });
 }
 
 export async function improveWithWorkersAI(result, message, env = {}) {

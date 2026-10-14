@@ -36,11 +36,17 @@ decision or replace the responsible office.
 
 ## Value proposition
 
-**From citizen language to the next safe public-service step.**
+**We reduce avoidable back-and-forth by translating life events into
+source-backed next steps and worker-ready handoffs.**
 
 CIVIC / GUIDE listens to unstructured German or English, maps it to a small
 source-backed workflow, explains the result in plain language and prepares a
 human-reviewable handoff only after confirmation.
+
+The same promise is available in three channels: the web app for the primary
+journey, a Chrome extension for citizens who are already stuck on an official
+page, and an ElevenLabs phone/WhatsApp agent for people who prefer or require
+voice. The shared output is a `CitizenCaseBrief`, not a generic chat answer.
 
 ## Positioning against what already exists
 
@@ -69,10 +75,23 @@ handoff, not a claim that the assistant can replace a public office.
 - **Passport renewal:** branch between renewal, loss and urgent cases; point to
   the official passport service page and collect only the details needed to
   prepare a handoff.
+- **Childcare support:** clarify the municipality and type of request, point to
+  official financial-support information and never decide individual
+  eligibility.
 
-ID Austria, parking permits and family allowance are included as additional
-workflow packs so the architecture can adapt if the challenge emphasis
-changes.
+ID Austria, parking permits and family allowance remain additional workflow
+packs so the architecture can adapt if the challenge emphasis changes.
+
+## Who pays and why
+
+The primary buyer is a municipality, public-service owner or implementation
+partner responsible for high-volume citizen journeys. A pilot can begin with
+one or two workflow packs and measure fewer avoidable clarification contacts,
+better-prepared appointments and clearer escalation. A credible commercial
+path is implementation of verified workflow packs plus a service-owner
+subscription for source/version management, audit and handoff integration;
+pricing should be validated with public-sector partners rather than invented
+for the hackathon.
 
 ## What success looks like
 

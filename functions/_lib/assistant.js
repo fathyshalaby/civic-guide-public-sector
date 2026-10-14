@@ -52,11 +52,11 @@ export function understand(message, preferredLanguage = "de") {
   if (!top?.score) return fallback(input, language);
   if (runnerUp?.score === top.score) {
     const ambiguous = [top.workflow, runnerUp.workflow].map((candidate) => getWorkflow(candidate.id, language).label);
-    return fallback(input, language, { ambiguous, matchedSignals: top.workflow.keywords.filter((keyword) => input.toLowerCase().includes(keyword)) });
+    return fallback(input, language, { ambiguous, matchedSignals: top.signals || [] });
   }
   const workflow = top.workflow;
   const localized = getWorkflow(workflow.id, language);
-  const matchedSignals = workflow.keywords.filter((keyword) => input.toLowerCase().includes(keyword));
+  const matchedSignals = top.signals || [];
   return attachBrief({ language, intent: workflow.id, confidence: Math.min(0.98, 0.66 + matchedSignals.length * 0.08), matchedSignals, reply: localized.reply, plainLanguage: localized.plainLanguage, questions: localized.questions, workflow: { id: workflow.id, label: localized.label, description: localized.description, steps: localized.steps, fields: localized.fields }, sources: localized.sources, humanHandoff: false, guardrails: { sourceBacked: true, legalDecision: false, humanReviewRequired: true }, traceId: traceId(), originalMessage: input });
 }
 

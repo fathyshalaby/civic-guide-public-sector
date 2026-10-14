@@ -146,6 +146,11 @@ function normalizeInput(message) {
     .trim();
 }
 
+function keywordMatches(input, keyword) {
+  const escaped = keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return new RegExp(`(?:^|[^\\p{L}\\p{N}])${escaped}(?=$|[^\\p{L}\\p{N}])`, "iu").test(input);
+}
+
 export function detectWorkflow(message) {
   const ranked = rankWorkflows(message);
   return ranked[0]?.score ? ranked[0].workflow : null;
@@ -154,7 +159,13 @@ export function detectWorkflow(message) {
 export function rankWorkflows(message) {
   const input = normalizeInput(message);
   return Object.values(WORKFLOWS)
-    .map((workflow) => ({ workflow, score: workflow.keywords.reduce((score, keyword) => score + (input.includes(keyword) ? 1 : 0), 0) }))
+    .map((workflow) => {
+      const signals = workflow.keywords
+        .filter((keyword) => keywordMatches(input, keyword))
+        .sort((a, b) => b.length - a.length)
+        .filter((keyword, _index, matches) => !matches.some((other) => other !== keyword && other.includes(keyword)));
+      return { workflow, score: signals.length, signals };
+    })
     .sort((a, b) => b.score - a.score);
 }
 

@@ -30,3 +30,28 @@ test("serves the same verified workflow in English", () => {
   assert.equal(result.workflow.fields[0].label, "Municipality of the new address");
   assert.ok(result.sources[0].authority === "oesterreich.gv.at");
 });
+
+test("maps the challenge's passport use case to a cautious official workflow", () => {
+  const result = understand("Mein Reisepass ist abgelaufen. Wie kann ich ihn erneuern?");
+  assert.equal(result.intent, "reisepass");
+  assert.equal(result.workflow.label, "Pass erneuern");
+  assert.deepEqual(result.workflow.fields.map((field) => field.id), ["caseType", "municipality"]);
+  assert.match(result.sources[0].url, /oesterreich\.gv\.at\/de\/landingpages\/reisepass$/);
+  assert.equal(result.guardrails.legalDecision, false);
+});
+
+test("stops and asks when one message combines equally strong service intents", () => {
+  const result = understand("I changed my address and my passport needs attention. What should I do first?", "en");
+  assert.equal(result.intent, "unknown");
+  assert.equal(result.humanHandoff, true);
+  assert.equal(result.confidence, 0.34);
+  assert.match(result.reply, /more than one possible service/i);
+  assert.deepEqual(result.matchedSignals, ["address"]);
+});
+
+test("recognizes the brief's childcare-subsidy style wording", () => {
+  const result = understand("I need help with childcare costs for my child.", "en");
+  assert.equal(result.intent, "familienbeihilfe");
+  assert.equal(result.workflow.label, "Check family allowance");
+  assert.equal(result.humanHandoff, false);
+});

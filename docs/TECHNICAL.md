@@ -22,6 +22,11 @@ Browser / ElevenLabs Agent
                          D1 audit + idempotent demo cases
 ```
 
+The Chrome Manifest V3 extension is a thin client on the same read-only
+`/api/understand` route. It only sends explicit selected text or a small,
+user-requested page context from an Austrian government domain. It never reads
+form values, password inputs or hidden page content.
+
 ## Safety boundary
 
 `functions/_lib/knowledge.js` is the source-backed workflow registry. The
@@ -32,6 +37,11 @@ sources, fields and guardrails remain the contract.
 The write-capable routes require `ELEVENLABS_TOOL_SECRET`. They accept a case
 only when the agent sends `confirm: true` and all required workflow fields are
 present. The browser has a separate visible confirmation checkbox.
+
+The event guide makes Workers AI and the Agents SDK available as optional
+building blocks. We keep them optional in the prototype: Pages and Functions
+provide the stable runtime, while the workflow registry remains auditable even
+when model or provider calls are unavailable.
 
 ## Channels
 
@@ -68,3 +78,5 @@ opening a pull request.
 - Keep `ALLOW_UNAUTHENTICATED_TOOLS=false`.
 - Connect a real public-service sandbox only after its authentication,
   idempotency and failure contract are agreed.
+- Run the evaluation cases in `docs/EVALUATION.md` against noisy, incomplete
+  and combined requests before changing the workflow registry.

@@ -11,7 +11,7 @@ export const WORKFLOWS = {
     questions: ["Ist es ein Haupt- oder Nebenwohnsitz?", "In welcher Gemeinde liegt die neue Adresse?"],
     steps: ["Neue Adresse und Wohnsitzart klären", "Meldezettel unterschreiben lassen", "Beim Meldeamt einreichen"],
     fields: [{ id: "municipality", label: "Gemeinde der neuen Adresse", placeholder: "z. B. Wien, Krems oder Graz", type: "text" }, { id: "residenceType", label: "Wohnsitzart", placeholder: "Hauptwohnsitz oder Nebenwohnsitz", type: "text" }],
-    sources: [{ label: "Wohnsitz anmelden", url: `${BASE}/themen/leben_in_oesterreich/auf_eigenen_beinen_stehen/Seite.170070.html`, authority: "oesterreich.gv.at", why: "Verfahrensbeschreibung und Frist" }],
+    sources: [{ label: "Wohnsitz anmelden", url: `${BASE}/de/landingpages/meldewesen`, authority: "oesterreich.gv.at", why: "Offizielle Verfahrensbeschreibung und Frist" }],
     en: {
       label: "Register a new address",
       description: "Register a new address with the responsible registration office.",
@@ -20,7 +20,29 @@ export const WORKFLOWS = {
       questions: ["Will this be your main or secondary residence?", "Which municipality is the new address in?"],
       steps: ["Clarify the new address and residence type", "Have the registration form signed", "Submit it to the registration office"],
       fields: [{ id: "municipality", label: "Municipality of the new address", placeholder: "e.g. Vienna, Krems or Graz", type: "text" }, { id: "residenceType", label: "Residence type", placeholder: "Main residence or secondary residence", type: "text" }],
-      sources: [{ label: "Register a new address", url: `${BASE}/en/themen/leben_in_oesterreich/auf_eigenen_beinen_stehen/Seite.170070.html`, authority: "oesterreich.gv.at", why: "Official procedure and deadline" }],
+      sources: [{ label: "Residence registration", url: `${BASE}/en/landingpages/meldewesen`, authority: "oesterreich.gv.at", why: "Official procedure and requirements" }],
+    },
+  },
+  reisepass: {
+    id: "reisepass",
+    label: "Pass erneuern",
+    description: "Den nächsten sicheren Schritt für eine neue oder abgelaufene Reisedokumentation klären.",
+    keywords: ["reisepass", "pass verlängern", "pass erneuern", "pass abgelaufen", "notpass", "passport", "passport renewal", "renew passport", "expired passport", "travel document"],
+    reply: "Für einen neuen oder abgelaufenen Reisepass solltest du zuerst klären, welcher Fall vorliegt und welche Passbehörde zuständig ist. Die offizielle Seite führt dich zu den aktuellen Informationen für Neuausstellung, Verlust, Dringlichkeit und Minderjährige.",
+    plainLanguage: ["Prüfe zuerst, ob es um Erneuerung, Verlust oder einen dringenden Pass geht.", "Zuständige Passbehörde, Unterlagen, Termin und Gebühren können vom Fall abhängen.", "Nutze die offizielle Pass-Seite als Checkliste, bevor du den Termin vorbereitest."],
+    questions: ["Ist dein Pass abgelaufen, verloren oder brauchst du ihn dringend?", "In welcher Gemeinde möchtest du den Pass beantragen?"],
+    steps: ["Fall und Reisedokument klären", "Zuständige Passbehörde und Unterlagen prüfen", "Termin oder Antrag vorbereiten"],
+    fields: [{ id: "caseType", label: "Dein Pass-Fall", placeholder: "Erneuerung, Verlust oder dringend", type: "text" }, { id: "municipality", label: "Gemeinde", placeholder: "z. B. Wien, Graz oder Linz", type: "text" }],
+    sources: [{ label: "Passport Online Services", url: `${BASE}/de/landingpages/reisepass`, authority: "oesterreich.gv.at", why: "Offizielle Informationen zu Pass-Services" }],
+    en: {
+      label: "Renew a passport",
+      description: "Clarify the next safe step for a new or expired travel document.",
+      reply: "For a new or expired passport, first clarify which situation applies and which passport authority is responsible. The official page guides you to current information for renewals, lost documents, urgent passports and minors.",
+      plainLanguage: ["First check whether this is a renewal, a lost passport or an urgent request.", "The responsible authority, documents, appointment and fees can depend on your situation.", "Use the official passport page as a checklist before preparing the appointment."],
+      questions: ["Has your passport expired, was it lost, or do you need it urgently?", "Which municipality do you want to apply in?"],
+      steps: ["Clarify the document and situation", "Check the responsible passport authority and documents", "Prepare the appointment or application"],
+      fields: [{ id: "caseType", label: "Your passport situation", placeholder: "Renewal, lost or urgent", type: "text" }, { id: "municipality", label: "Municipality", placeholder: "e.g. Vienna, Graz or Linz", type: "text" }],
+      sources: [{ label: "Passport Online Services", url: `${BASE}/en/landingpages/reisepass`, authority: "oesterreich.gv.at", why: "Official passport service information" }],
     },
   },
   idAustria: {
@@ -71,7 +93,7 @@ export const WORKFLOWS = {
     id: "familienbeihilfe",
     label: "Familienbeihilfe prüfen",
     description: "Den nächsten Schritt für eine Familienbeihilfe-Anfrage klären.",
-    keywords: ["familienbeihilfe", "familie", "kind", "kinderbeihilfe", "geburt", "finanzamt", "family allowance", "child benefit", "birth", "tax office"],
+    keywords: ["familienbeihilfe", "familie", "kind", "kinderbeihilfe", "kinderbetreuungsgeld", "geburt", "finanzamt", "family allowance", "child benefit", "childcare", "child care", "birth", "tax office"],
     reply: "Die Familienbeihilfe wird in Österreich grundsätzlich über das Finanzamt Österreich abgewickelt. Ich kann dir die Voraussetzungen und den nächsten Schritt in verständlicher Form zeigen.",
     plainLanguage: ["Die Leistung hängt unter anderem von Wohnsitz und Haushaltszugehörigkeit ab.", "Für manche Fälle wird die Familienbeihilfe automatisch geprüft.", "Bei Änderungen solltest du die zuständige Stelle informieren."],
     questions: ["Geht es um einen neuen Antrag oder um eine Änderung?", "Für welches Kind möchtest du die Information?"],
@@ -92,9 +114,15 @@ export const WORKFLOWS = {
 };
 
 export function detectWorkflow(message) {
-  const input = String(message || "").toLowerCase();
-  const ranked = Object.values(WORKFLOWS).map((workflow) => ({ workflow, score: workflow.keywords.reduce((score, keyword) => score + (input.includes(keyword) ? 1 : 0), 0) })).sort((a, b) => b.score - a.score);
+  const ranked = rankWorkflows(message);
   return ranked[0]?.score ? ranked[0].workflow : null;
+}
+
+export function rankWorkflows(message) {
+  const input = String(message || "").toLowerCase();
+  return Object.values(WORKFLOWS)
+    .map((workflow) => ({ workflow, score: workflow.keywords.reduce((score, keyword) => score + (input.includes(keyword) ? 1 : 0), 0) }))
+    .sort((a, b) => b.score - a.score);
 }
 
 export function getWorkflow(id, language = "de") {

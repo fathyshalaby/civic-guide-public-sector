@@ -119,6 +119,7 @@ Keep `PUBLIC_SERVICE_MODE=mock` for the event unless a real sandbox endpoint and
 The deterministic knowledge layer contains small, auditable examples for:
 
 - residence registration (`Wohnsitz anmelden`);
+- passport renewal and lost/urgent passport guidance (`Pass erneuern`);
 - ID Austria setup;
 - parking permissions;
 - Familienbeihilfe information.
@@ -127,7 +128,7 @@ Each workflow contains its plain-language answer, questions, required preparatio
 
 ## Product boundary and future work
 
-The first version is a safe guidance and handoff layer around existing Austrian services such as `oesterreich.gv.at`, ID Austria and municipal systems. The next credible extensions are:
+The first version is a safe guidance and handoff layer around existing Austrian services such as `oesterreich.gv.at`, the official IDA chatbot, ID Austria and municipal systems. It complements the portal instead of claiming to replace it. The next credible extensions are:
 
 - upload a government letter and explain it in plain language;
 - municipality-specific workflow packs and appointment deep links;

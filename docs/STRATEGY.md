@@ -42,6 +42,14 @@ CIVIC / GUIDE listens to unstructured German or English, maps it to a small
 source-backed workflow, explains the result in plain language and prepares a
 human-reviewable handoff only after confirmation.
 
+## Positioning against what already exists
+
+Austria already offers a broad digital-services catalogue and the official
+IDA chatbot. CIVIC / GUIDE is deliberately complementary: it is the
+contextual, workflow-oriented layer that helps a citizen understand the page
+they are already on. The differentiator is visible evidence and a safe
+handoff, not a claim that the assistant can replace a public office.
+
 ## Product principles
 
 1. **Explain before you act.** Every answer shows the next step and its source.
@@ -58,11 +66,13 @@ human-reviewable handoff only after confirmation.
 
 - **Change of residence:** explain the registration deadline, required form,
   signature and photo ID; collect municipality and residence type.
-- **ID Austria:** explain registration prerequisites and the next step for
-  digital public services.
+- **Passport renewal:** branch between renewal, loss and urgent cases; point to
+  the official passport service page and collect only the details needed to
+  prepare a handoff.
 
-Parking permits and family allowance are included as additional demonstrable
-workflows so the architecture can adapt if the challenge emphasis changes.
+ID Austria, parking permits and family allowance are included as additional
+workflow packs so the architecture can adapt if the challenge emphasis
+changes.
 
 ## What success looks like
 

@@ -14,22 +14,30 @@ Show the answer, the confidence signal, the source from oesterreich.gv.at and
 the plain-language checklist. Point out that the assistant says what it knows
 and asks only for municipality and residence type.
 
-## 0:30–0:45 — Access
+## 0:30–0:45 — Meet the citizen on the page
 
-Switch to English and ask: **“I moved house. What do I need to do now?”**
+Open the official passport service page in the CIVIC GUIDE browser extension and
+select a confusing passage. Ask: **“My passport has expired. What do I need to
+do?”**
 
-Show that the same workflow is available in English, with the same official
-source and human-review boundary. Mention the voice entry point and the
-ElevenLabs agent for web, phone and WhatsApp.
+Show that the page context becomes a cautious passport workflow with an
+official source, a small decision tree and no claim that the document was
+renewed.
 
-## 0:45–1:10 — Human-safe handoff
+## 0:45–1:05 — Inclusive access
+
+Switch to English and ask: **“I moved house. What do I need to do now?”** Show
+the same source-backed workflow in English. Mention the voice entry point and
+the ElevenLabs agent for web, phone and WhatsApp.
+
+## 1:05–1:20 — Human-safe handoff
 
 Click **Prepare handoff**, enter “Wien” and “Hauptwohnsitz”, then confirm.
 Show the demo case number. Say explicitly: “This is prepared, not falsely
 claimed as submitted. A real public-service adapter can replace the mock
 adapter after the responsible office provides its contract.”
 
-## 1:10–1:30 — Why this can ship
+## 1:20–1:30 — Why this can ship
 
 “The workflow registry is source-backed and auditable. ElevenLabs handles the
 conversation channels; Cloudflare Pages and Functions keep the integration
